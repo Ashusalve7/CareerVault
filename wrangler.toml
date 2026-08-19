@@ -1,0 +1,25 @@
+name = "careervault"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".next"
+
+# -----------------------------------------------------------
+# Cloudflare D1 Serverless SQL Database Binding
+# -----------------------------------------------------------
+[[d1_databases]]
+binding = "DB"
+database_name = "careervault_db"
+database_id = "7988db33-104a-46bf-ab7e-d5786b952810"
+
+# -----------------------------------------------------------
+# Cloudflare R2 Zero-Egress Object Storage Binding
+# -----------------------------------------------------------
+[[r2_buckets]]
+binding = "RESUMES_BUCKET"
+bucket_name = "careervault"
+preview_bucket_name = "careervault-preview"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+R2_BUCKET_NAME = "careervault"
