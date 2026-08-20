@@ -64,7 +64,7 @@ export default function InterviewsPage() {
     setJobs(StorageEngine.getJobs());
   };
 
-  const sampleQuestionBank = [
+  const curatedQuestionBank = [
     {
       category: 'System Design & Architecture',
       question: 'Design an offline-first collaborative workspace with real-time optimistic sync and conflict resolution (CRDT / Operational Transforms).',
@@ -243,7 +243,7 @@ export default function InterviewsPage() {
           {/* TAB 2: QUESTION BANK */}
           {activeTab === 'question_bank' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {sampleQuestionBank.map((q, idx) => (
+              {curatedQuestionBank.map((q, idx) => (
                 <div
                   key={idx}
                   className="glass-card rounded-3xl p-6 border border-slate-800 space-y-4 flex flex-col justify-between"

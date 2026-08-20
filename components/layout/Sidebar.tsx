@@ -59,7 +59,7 @@ export function Sidebar({ onOpenSettings }: SidebarProps) {
   ];
 
   const handleResetData = () => {
-    if (confirm('Reset application data to realistic default demo dataset?')) {
+    if (confirm('Clear all local application data? This will reset the workspace.')) {
       StorageEngine.resetToSampleData();
       window.location.reload();
     }
@@ -168,10 +168,10 @@ export function Sidebar({ onOpenSettings }: SidebarProps) {
         <button
           onClick={handleResetData}
           className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 border border-slate-800/50 transition-colors"
-          title="Reset to sample dataset"
+          title="Clear all stored data"
         >
           <RotateCcw className="w-3.5 h-3.5" />
-          Reset Demo Data
+          Clear All Data
         </button>
         <div className="text-[11px] text-center text-slate-400 flex items-center justify-center gap-1">
           <Sparkles className="w-3 h-3 text-indigo-400" />

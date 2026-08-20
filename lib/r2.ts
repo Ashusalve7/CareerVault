@@ -77,10 +77,10 @@ export class CloudflareR2Client {
       return { key, url: publicUrl };
     }
 
-    // 3. Fallback mock url
+    // 3. Fallback direct object url
     return {
       key,
-      url: `/resumes/mock/${key}`,
+      url: `https://${this.bucketName}.r2.cloudflarestorage.com/${key}`,
     };
   }
 

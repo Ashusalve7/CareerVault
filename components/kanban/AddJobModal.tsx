@@ -24,15 +24,15 @@ export function AddJobModal({
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [locationType, setLocationType] = useState<JobLocationType>('remote');
-  const [salaryMin, setSalaryMin] = useState<string>('180000');
-  const [salaryMax, setSalaryMax] = useState<string>('240000');
+  const [salaryMin, setSalaryMin] = useState<string>('');
+  const [salaryMax, setSalaryMax] = useState<string>('');
   const [status, setStatus] = useState<ApplicationStatus>(initialStatus);
-  const [priority, setPriority] = useState<JobPriority>('high');
+  const [priority, setPriority] = useState<JobPriority>('medium');
   const [jobUrl, setJobUrl] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [notes, setNotes] = useState('');
   const [selectedResumeId, setSelectedResumeId] = useState('');
-  const [tagsInput, setTagsInput] = useState('React, TypeScript, Cloudflare');
+  const [tagsInput, setTagsInput] = useState('');
   const [recruiterName, setRecruiterName] = useState('');
   const [recruiterEmail, setRecruiterEmail] = useState('');
 
@@ -92,13 +92,24 @@ export function AddJobModal({
           createdAt: new Date().toISOString(),
         }
       ] : [],
-      checklist: [
-        { id: `c-${Date.now()}-1`, text: 'Research company engineering blog', completed: false },
-        { id: `c-${Date.now()}-2`, text: 'Review target tech stack', completed: false },
-      ],
+      checklist: [],
       tags,
       color: randomColor,
     });
+
+    // Reset form fields
+    setCompany('');
+    setTitle('');
+    setLocation('');
+    setSalaryMin('');
+    setSalaryMax('');
+    setJobUrl('');
+    setJobDescription('');
+    setNotes('');
+    setTagsInput('');
+    setSelectedResumeId('');
+    setRecruiterName('');
+    setRecruiterEmail('');
 
     onClose();
   };
@@ -133,9 +144,10 @@ export function AddJobModal({
               <input
                 type="text"
                 required
+                placeholder="e.g. Stripe, OpenAI, Google"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
               />
             </div>
 
@@ -144,9 +156,10 @@ export function AddJobModal({
               <input
                 type="text"
                 required
+                placeholder="e.g. Senior Fullstack Engineer"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
               />
             </div>
           </div>
@@ -199,9 +212,10 @@ export function AddJobModal({
               <label className="text-xs font-semibold text-slate-300">Location (City / State)</label>
               <input
                 type="text"
+                placeholder="e.g. San Francisco, CA or Remote"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
               />
             </div>
 
@@ -210,16 +224,18 @@ export function AddJobModal({
               <div className="flex items-center gap-2">
                 <input
                   type="number"
+                  placeholder="Min (e.g. 150000)"
                   value={salaryMin}
                   onChange={(e) => setSalaryMin(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
                 />
                 <span className="text-xs text-slate-400">-</span>
                 <input
                   type="number"
+                  placeholder="Max (e.g. 200000)"
                   value={salaryMax}
                   onChange={(e) => setSalaryMax(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
                 />
               </div>
             </div>
@@ -242,12 +258,13 @@ export function AddJobModal({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300">Job URL</label>
+            <label className="text-xs font-semibold text-slate-300">Job Posting URL</label>
             <input
               type="url"
+              placeholder="https://company.com/careers/role"
               value={jobUrl}
               onChange={(e) => setJobUrl(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500"
+              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
             />
           </div>
 
@@ -255,9 +272,10 @@ export function AddJobModal({
             <label className="text-xs font-semibold text-slate-300">Tech Stack & Tags (comma separated)</label>
             <input
               type="text"
+              placeholder="e.g. React, Next.js, Cloudflare, TypeScript"
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500"
+              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
             />
           </div>
 

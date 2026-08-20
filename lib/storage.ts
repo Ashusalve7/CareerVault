@@ -97,7 +97,7 @@ export class StorageEngine {
           format: 'video',
           status: 'scheduled',
           dateTime: new Date(Date.now() + 86400000 * 3).toISOString(), // 3 days from now
-          notes: 'Prepare intro and review project highlights.',
+          notes: '',
           createdAt: new Date().toISOString(),
         }
       ];

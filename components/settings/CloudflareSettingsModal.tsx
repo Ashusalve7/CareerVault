@@ -61,16 +61,13 @@ export function CloudflareSettingsModal({
     }
   };
 
-  const wranglerCommands = `# 1. Create Cloudflare D1 SQL Database
-npx wrangler d1 create careervault_db
-
-# 2. Run SQL Schema Migrations on D1
+  const wranglerCommands = `# 1. Run SQL Schema Migrations on Cloudflare D1
 npx wrangler d1 execute careervault_db --file=./lib/schema.sql
 
-# 3. Create Cloudflare R2 Storage Bucket
-npx wrangler r2 bucket create careervault-resumes
+# 2. Test Live D1 Database Query
+npx wrangler d1 execute careervault_db --command="SELECT * FROM jobs;"
 
-# 4. Deploy Next.js to Cloudflare Pages / Workers
+# 3. Build & Deploy to Cloudflare Pages / Workers
 npm run build
 npx wrangler pages deploy .next`;
 
@@ -145,7 +142,7 @@ npx wrangler pages deploy .next`;
               <div className="space-y-1 text-xs text-slate-300">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Bucket Name:</span>
-                  <span className="font-mono text-blue-400 font-bold">careervault-resumes</span>
+                  <span className="font-mono text-blue-400 font-bold">careervault</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Protocol:</span>

@@ -13,9 +13,9 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [name, setName] = useState('');
-  const [versionTag, setVersionTag] = useState('v1.0 - Fullstack');
-  const [skillsInput, setSkillsInput] = useState('TypeScript, Next.js, React, Node.js, Cloudflare, PostgreSQL');
-  const [targetRolesInput, setTargetRolesInput] = useState('Senior Fullstack Engineer, Frontend Architect');
+  const [versionTag, setVersionTag] = useState('v1.0');
+  const [skillsInput, setSkillsInput] = useState('');
+  const [targetRolesInput, setTargetRolesInput] = useState('');
   const [summary, setSummary] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -109,8 +109,8 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
         r2Url,
         skills,
         targetRoles,
-        summary: summary.trim() || `Resume tailored for ${targetRoles.join(', ')} roles.`,
-        contentSnippet: `${name} | Tailored skills: ${skills.join(', ')}`,
+        summary: summary.trim() || (targetRoles.length > 0 ? `Resume tailored for ${targetRoles.join(', ')} roles.` : 'Uploaded resume version.'),
+        contentSnippet: `${name} | ${skills.length > 0 ? `Skills: ${skills.join(', ')}` : selectedFile.name}`,
         isDefault: false,
         linkedJobsCount: 0,
       });
@@ -128,7 +128,7 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
         fileSize: selectedFile.size,
         fileType: selectedFile.type || 'application/pdf',
         r2Key: `resumes/${Date.now()}-${selectedFile.name}`,
-        r2Url: `/resumes/mock/${selectedFile.name}`,
+        r2Url: `https://r2.careervault.dev/resumes/${selectedFile.name}`,
         skills,
         targetRoles,
         summary: summary.trim(),
@@ -226,9 +226,10 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
             <input
               type="text"
               required
+              placeholder="e.g. Senior Fullstack Resume"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
             />
           </div>
 
@@ -237,9 +238,10 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
             <input
               type="text"
               required
+              placeholder="e.g. v1.0"
               value={versionTag}
               onChange={(e) => setVersionTag(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
             />
           </div>
         </div>
@@ -248,9 +250,10 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
           <label className="text-xs font-semibold text-slate-300">Core Skills (for ATS Matcher)</label>
           <input
             type="text"
+            placeholder="e.g. TypeScript, React, Next.js, Node.js, Cloudflare, PostgreSQL"
             value={skillsInput}
             onChange={(e) => setSkillsInput(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
           />
         </div>
 
@@ -258,9 +261,10 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
           <label className="text-xs font-semibold text-slate-300">Target Roles</label>
           <input
             type="text"
+            placeholder="e.g. Senior Fullstack Engineer, Frontend Architect"
             value={targetRolesInput}
             onChange={(e) => setTargetRolesInput(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
           />
         </div>
 

@@ -46,7 +46,7 @@ export default function AnalyticsPage() {
   const salaryJobs = jobs.filter((j) => j.salaryMax && j.salaryMax > 0);
   const avgSalary = salaryJobs.length > 0
     ? Math.round(salaryJobs.reduce((acc, j) => acc + (j.salaryMax || 0), 0) / salaryJobs.length)
-    : 215000;
+    : 0;
 
   // Sources breakdown
   const sourceCounts: { [key: string]: number } = {};
@@ -184,17 +184,23 @@ export default function AnalyticsPage() {
                 Application Sources Breakdown
               </h3>
               <div className="space-y-3">
-                {Object.entries(sourceCounts).map(([src, count], idx) => (
-                  <div
-                    key={idx}
-                    className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between"
-                  >
-                    <span className="text-xs font-bold text-slate-200">{src}</span>
-                    <span className="text-xs font-bold text-blue-400 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                      {count} roles
-                    </span>
+                {Object.keys(sourceCounts).length === 0 ? (
+                  <div className="p-6 text-center text-xs text-slate-500 italic border border-dashed border-slate-800 rounded-2xl">
+                    No applications added yet to compute source breakdown.
                   </div>
-                ))}
+                ) : (
+                  Object.entries(sourceCounts).map(([src, count], idx) => (
+                    <div
+                      key={idx}
+                      className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between"
+                    >
+                      <span className="text-xs font-bold text-slate-200">{src}</span>
+                      <span className="text-xs font-bold text-blue-400 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                        {count} roles
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 

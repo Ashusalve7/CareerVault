@@ -29,7 +29,7 @@ export default function ContactsPage() {
 
   // New Contact form state
   const [name, setName] = useState('');
-  const [role, setRole] = useState('Technical Recruiter');
+  const [role, setRole] = useState('');
   const [company, setCompany] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -53,7 +53,7 @@ export default function ContactsPage() {
 
     StorageEngine.addContact({
       name: name.trim(),
-      role: role.trim(),
+      role: role.trim() || 'Recruiter',
       company: company.trim(),
       email: email.trim(),
       phone: phone.trim() || undefined,
@@ -66,6 +66,7 @@ export default function ContactsPage() {
     setIsAddContactOpen(false);
     setName('');
     setCompany('');
+    setRole('');
     setEmail('');
     setPhone('');
     setLinkedin('');
@@ -134,84 +135,94 @@ export default function ContactsPage() {
           </div>
 
           {/* Contacts Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredContacts.map((contact) => (
-              <div
-                key={contact.id}
-                className="glass-card rounded-3xl p-6 border border-slate-800 space-y-4 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center justify-center font-bold text-sm">
-                        {contact.name.slice(0, 2).toUpperCase()}
+          {filteredContacts.length === 0 ? (
+            <div className="p-12 text-center border-2 border-dashed border-slate-800 rounded-3xl bg-slate-900/30 space-y-3">
+              <Users className="w-10 h-10 text-slate-500 mx-auto" />
+              <h3 className="text-base font-bold text-slate-200">No Recruiter Contacts Saved</h3>
+              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                Keep track of talent acquisition partners, engineering managers, and referral contacts by clicking &quot;Add Recruiter&quot;.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredContacts.map((contact) => (
+                <div
+                  key={contact.id}
+                  className="glass-card rounded-3xl p-6 border border-slate-800 space-y-4 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-2 mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center justify-center font-bold text-sm">
+                          {contact.name.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <h4 className="text-base font-bold text-white">{contact.name}</h4>
+                          <p className="text-xs text-slate-400">
+                            {contact.role} • <strong className="text-blue-400">{contact.company}</strong>
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="text-base font-bold text-white">{contact.name}</h4>
-                        <p className="text-xs text-slate-400">
-                          {contact.role} • <strong className="text-blue-400">{contact.company}</strong>
-                        </p>
-                      </div>
+
+                      <button
+                        onClick={() => handleDeleteContact(contact.id)}
+                        className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
 
-                    <button
-                      onClick={() => handleDeleteContact(contact.id)}
-                      className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  <div className="space-y-2 text-xs text-slate-300">
-                    <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-900/60 border border-slate-800/60">
-                      <Mail className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                      <a href={`mailto:${contact.email}`} className="text-blue-400 hover:underline truncate">
-                        {contact.email}
-                      </a>
-                    </div>
-
-                    {contact.phone && (
+                    <div className="space-y-2 text-xs text-slate-300">
                       <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-900/60 border border-slate-800/60">
-                        <Phone className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                        <span>{contact.phone}</span>
-                      </div>
-                    )}
-
-                    {contact.linkedIn && (
-                      <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-900/60 border border-slate-800/60">
-                        <Globe className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                        <a
-                          href={contact.linkedIn}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-blue-400 hover:underline truncate"
-                        >
-                          LinkedIn Profile
+                        <Mail className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                        <a href={`mailto:${contact.email}`} className="text-blue-400 hover:underline truncate">
+                          {contact.email}
                         </a>
                       </div>
-                    )}
 
-                    {contact.notes && (
-                      <p className="text-xs text-slate-400 p-3 rounded-xl bg-slate-900/40 border border-slate-800/40 italic">
-                        &quot;{contact.notes}&quot;
-                      </p>
-                    )}
+                      {contact.phone && (
+                        <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-900/60 border border-slate-800/60">
+                          <Phone className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                          <span>{contact.phone}</span>
+                        </div>
+                      )}
+
+                      {contact.linkedIn && (
+                        <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-900/60 border border-slate-800/60">
+                          <Globe className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                          <a
+                            href={contact.linkedIn}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-400 hover:underline truncate"
+                          >
+                            LinkedIn Profile
+                          </a>
+                        </div>
+                      )}
+
+                      {contact.notes && (
+                        <p className="text-xs text-slate-400 p-3 rounded-xl bg-slate-900/40 border border-slate-800/40 italic">
+                          &quot;{contact.notes}&quot;
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                    <span>Added {new Date(contact.createdAt).toLocaleDateString()}</span>
+                    <a
+                      href={`mailto:${contact.email}`}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600/20 text-blue-300 border border-blue-500/30 hover:bg-blue-600/30 font-semibold transition-colors"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                      <span>Contact</span>
+                    </a>
                   </div>
                 </div>
-
-                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                  <span>Added {new Date(contact.createdAt).toLocaleDateString()}</span>
-                  <a
-                    href={`mailto:${contact.email}`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600/20 text-blue-300 border border-blue-500/30 hover:bg-blue-600/30 font-semibold transition-colors"
-                  >
-                    <Mail className="w-3.5 h-3.5" />
-                    <span>Contact</span>
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </main>
       </div>
 
@@ -232,9 +243,10 @@ export default function ContactsPage() {
                 <input
                   type="text"
                   required
+                  placeholder="e.g. Sarah Jenkins"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                 />
               </div>
 
@@ -244,9 +256,10 @@ export default function ContactsPage() {
                   <input
                     type="text"
                     required
+                    placeholder="e.g. Stripe"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
@@ -254,9 +267,10 @@ export default function ContactsPage() {
                   <label className="text-xs font-semibold text-slate-300">Role Title</label>
                   <input
                     type="text"
+                    placeholder="e.g. Lead Technical Recruiter"
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -266,9 +280,10 @@ export default function ContactsPage() {
                 <input
                   type="email"
                   required
+                  placeholder="e.g. sarah@stripe.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                 />
               </div>
 
@@ -277,9 +292,10 @@ export default function ContactsPage() {
                   <label className="text-xs font-semibold text-slate-300">Phone</label>
                   <input
                     type="text"
+                    placeholder="e.g. +1 (415) 555-0192"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
@@ -287,9 +303,10 @@ export default function ContactsPage() {
                   <label className="text-xs font-semibold text-slate-300">LinkedIn URL</label>
                   <input
                     type="text"
+                    placeholder="https://linkedin.com/in/..."
                     value={linkedin}
                     onChange={(e) => setLinkedin(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -297,10 +314,11 @@ export default function ContactsPage() {
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-300">Relationship Notes</label>
                 <textarea
+                  placeholder="e.g. Connected via mutual teammate on LinkedIn. Recruiter for Edge compute team."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                 />
               </div>
 
