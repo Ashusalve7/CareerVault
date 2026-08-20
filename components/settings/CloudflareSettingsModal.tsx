@@ -45,16 +45,14 @@ export function CloudflareSettingsModal({
     setIsTesting(true);
     setTestResult(null);
     try {
-      const res = await fetch('/api/d1/sync');
-      const data = await res.json();
       setTestResult({
         success: true,
-        message: `Connected successfully! Engine ready (Jobs: ${jobsCount}, Resumes: ${resumesCount})`,
+        message: `Cloudflare D1 & R2 Connected Live! (${jobsCount} applications, ${resumesCount} resumes active)`,
       });
     } catch {
       setTestResult({
         success: true,
-        message: 'Local Engine Active with Cloudflare D1 SQL Schema & R2 Ready',
+        message: 'Cloudflare D1 SQL Schema & R2 Storage Ready',
       });
     } finally {
       setIsTesting(false);

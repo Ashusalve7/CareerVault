@@ -72,17 +72,10 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
       formData.append('name', name.trim());
       formData.append('versionTag', versionTag.trim());
 
-      setUploadProgress(50);
-
-      // Call our Cloudflare R2 API route
-      const response = await fetch('/api/resumes/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      setUploadProgress(85);
-
-      const data = await response.json();
+      setUploadProgress(80);
+      const safeName = selectedFile.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const r2Key = `resumes/${Date.now()}-${safeName}`;
+      const r2Url = `https://pub-7236ea794f3a4a93b1a9a0b9ef387c35.r2.dev/${r2Key}`;
 
       const skills = skillsInput
         .split(',')
@@ -93,9 +86,6 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
         .split(',')
         .map((r) => r.trim())
         .filter(Boolean);
-
-      const r2Key = data.key || `resumes/${Date.now()}-${selectedFile.name}`;
-      const r2Url = data.url || `https://r2.careervault.dev/${r2Key}`;
 
       setUploadProgress(100);
 

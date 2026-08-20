@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "pages:deploy": "next build && wrangler pages deploy .next",
+    "pages:deploy": "next build && wrangler pages deploy out",
     "d1:migrate": "wrangler d1 execute careervault_db --file=./lib/schema.sql",
     "d1:test": "wrangler d1 execute careervault_db --command=\"SELECT * FROM jobs;\""
   },
