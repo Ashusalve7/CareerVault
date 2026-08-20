@@ -9,12 +9,9 @@ import {
   Calendar,
   BarChart3,
   Users,
-  Database,
   Briefcase,
   Sparkles,
   RotateCcw,
-  Cloud,
-  UserCheck,
   ChevronDown,
   UserPlus,
 } from 'lucide-react';
@@ -22,12 +19,11 @@ import { StorageEngine } from '@/lib/storage';
 import { AuthEngine, UserAccount, AUTH_SYNC_EVENT } from '@/lib/auth';
 
 interface SidebarProps {
-  onOpenSettings?: () => void;
   onOpenAddJob?: () => void;
   onOpenAuth?: (tab?: 'signin' | 'signup' | 'switch') => void;
 }
 
-export function Sidebar({ onOpenSettings, onOpenAuth }: SidebarProps) {
+export function Sidebar({ onOpenAuth }: SidebarProps) {
   const pathname = usePathname();
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
 
@@ -53,7 +49,7 @@ export function Sidebar({ onOpenSettings, onOpenAuth }: SidebarProps) {
       name: 'Resume Vault',
       href: '/resumes',
       icon: FileText,
-      badge: 'R2 Storage',
+      badge: 'PDF Vault',
     },
     {
       name: 'Interview Prep',
@@ -99,29 +95,14 @@ export function Sidebar({ onOpenSettings, onOpenAuth }: SidebarProps) {
                 PRO
               </span>
             </div>
-            <p className="text-xs text-slate-400 font-medium">Job & Resume Hub</p>
+            <p className="text-xs text-slate-400 font-medium">Career & Resume Hub</p>
           </div>
         </Link>
       </div>
 
-      {/* Cloudflare Status Tag */}
-      <div className="px-4 py-3 mx-3 my-3 rounded-xl bg-slate-900/90 border border-slate-800/80">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-            <Cloud className="w-3.5 h-3.5 text-amber-400" />
-            Cloudflare Ready
-          </span>
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        </div>
-        <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
-          <span>D1 SQL: <strong className="text-emerald-400">Bound</strong></span>
-          <span>R2: <strong className="text-blue-400">Active</strong></span>
-        </div>
-      </div>
-
       {/* Main Navigation */}
-      <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
-        <div className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <div className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
           Navigation
         </div>
 
@@ -161,23 +142,6 @@ export function Sidebar({ onOpenSettings, onOpenAuth }: SidebarProps) {
             </Link>
           );
         })}
-
-        <div className="pt-4 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-          Infrastructure
-        </div>
-
-        <button
-          onClick={onOpenSettings}
-          className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all duration-150 text-left"
-        >
-          <div className="flex items-center gap-3">
-            <Database className="w-4 h-4 text-slate-400" />
-            <span>Cloudflare D1 & R2</span>
-          </div>
-          <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">
-            Config
-          </span>
-        </button>
       </nav>
 
       {/* Active User Profile Widget */}

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Navbar } from '@/components/layout/Navbar';
-import { CloudflareSettingsModal } from '@/components/settings/CloudflareSettingsModal';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { StorageEngine, SYNC_EVENT } from '@/lib/storage';
 import { AUTH_SYNC_EVENT } from '@/lib/auth';
@@ -27,7 +26,6 @@ export default function ContactsPage() {
   const [jobs, setJobs] = useState<JobApplication[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddContactOpen, setIsAddContactOpen] = useState(false);
-  const [isCloudflareModalOpen, setIsCloudflareModalOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'switch'>('switch');
 
@@ -106,7 +104,6 @@ export default function ContactsPage() {
   return (
     <div className="flex min-h-screen bg-[#090D16] text-slate-100 antialiased">
       <Sidebar
-        onOpenSettings={() => setIsCloudflareModalOpen(true)}
         onOpenAuth={handleOpenAuth}
       />
 
@@ -119,7 +116,6 @@ export default function ContactsPage() {
           selectedLocationType="all"
           onLocationTypeChange={() => {}}
           onOpenAddJob={() => {}}
-          onOpenCloudflareModal={() => setIsCloudflareModalOpen(true)}
           onOpenAuth={handleOpenAuth}
           totalJobsCount={jobs.length}
         />
@@ -358,13 +354,6 @@ export default function ContactsPage() {
           </div>
         </div>
       )}
-
-      <CloudflareSettingsModal
-        isOpen={isCloudflareModalOpen}
-        onClose={() => setIsCloudflareModalOpen(false)}
-        jobsCount={jobs.length}
-        resumesCount={0}
-      />
 
       <AuthModal
         isOpen={isAuthOpen}

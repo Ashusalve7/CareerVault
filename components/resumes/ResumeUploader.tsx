@@ -140,9 +140,9 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
           </div>
           <div>
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              Upload Resume to Cloudflare R2
+              Upload Resume Version
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                S3 Storage
+                Secure Vault
               </span>
             </h3>
             <p className="text-xs text-slate-400">Save versioned resumes with ATS keywords</p>
@@ -188,7 +188,7 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
               <div className="text-left">
                 <p className="text-xs font-bold text-slate-100">{selectedFile.name}</p>
                 <p className="text-[11px] text-emerald-400 font-medium">
-                  {(selectedFile.size / 1024).toFixed(1)} KB • Ready for Cloudflare R2
+                  {(selectedFile.size / 1024).toFixed(1)} KB • Ready to Save
                 </p>
               </div>
             </div>
@@ -240,7 +240,7 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
           <label className="text-xs font-semibold text-slate-300">Core Skills (for ATS Matcher)</label>
           <input
             type="text"
-            placeholder="e.g. TypeScript, React, Next.js, Node.js, Cloudflare, PostgreSQL"
+            placeholder="e.g. TypeScript, React, Next.js, Node.js, Python, PostgreSQL"
             value={skillsInput}
             onChange={(e) => setSkillsInput(e.target.value)}
             className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
@@ -261,7 +261,7 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
         {uploading && (
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs text-slate-300 font-medium">
-              <span>Uploading to Cloudflare R2...</span>
+              <span>Saving resume...</span>
               <span>{uploadProgress}%</span>
             </div>
             <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
@@ -288,8 +288,8 @@ export function ResumeUploader({ onUploadSuccess, onClose }: ResumeUploaderProps
             disabled={!selectedFile || uploading}
             className="flex items-center gap-2 px-6 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 disabled:opacity-50 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all"
           >
-            <Cloud className="w-4 h-4" />
-            <span>{uploading ? 'Storing in R2...' : 'Upload to Cloudflare R2'}</span>
+            <UploadCloud className="w-4 h-4" />
+            <span>{uploading ? 'Saving resume...' : 'Upload Resume'}</span>
           </button>
         </div>
       </form>

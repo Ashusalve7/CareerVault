@@ -33,7 +33,7 @@ export function ResumePreviewModal({ resume, jobs, isOpen, onClose }: ResumePrev
                 </span>
               </h3>
               <p className="text-xs text-slate-400 font-mono">
-                {resume.fileName} • {(resume.fileSize / 1024).toFixed(1)} KB • Stored in Cloudflare R2
+                {resume.fileName} • {(resume.fileSize / 1024).toFixed(1)} KB • Stored in Secure Vault
               </p>
             </div>
           </div>
@@ -61,11 +61,11 @@ export function ResumePreviewModal({ resume, jobs, isOpen, onClose }: ResumePrev
             <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-2">
               <span>Resume Text & Key Extraction</span>
               <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                <Cloud className="w-3 h-3" /> R2 Object Ready
+                Vault Ready
               </span>
             </div>
             <div className="p-4 rounded-xl bg-slate-900 font-mono text-xs text-slate-300 leading-relaxed whitespace-pre-wrap border border-slate-800/60">
-              {resume.contentSnippet || 'Resume content synced to Cloudflare R2 Storage.'}
+              {resume.contentSnippet || 'Resume content synced to secure vault.'}
             </div>
           </div>
 

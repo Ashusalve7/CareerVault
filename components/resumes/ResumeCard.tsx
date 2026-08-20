@@ -164,7 +164,7 @@ export function ResumeCard({
         <button
           onClick={handleDownload}
           className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/80 transition-colors"
-          title="Download from Cloudflare R2"
+          title="Download Resume"
         >
           <Download className="w-4 h-4" />
         </button>

@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CareerVault - Job Application & Resume Tracker with Cloudflare D1 & R2",
-  description: "Next-gen Job Pipeline & Resume Management Hub powered by Next.js, Cloudflare D1 Serverless SQL, and Cloudflare R2.",
+  title: "CareerVault - Job Application & Resume Tracker",
+  description: "Next-gen Job Pipeline & Resume Management Hub with isolated multi-user workspaces.",
 };
 
 export default function RootLayout({

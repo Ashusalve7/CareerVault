@@ -272,7 +272,7 @@ export function AddJobModal({
             <label className="text-xs font-semibold text-slate-300">Tech Stack & Tags (comma separated)</label>
             <input
               type="text"
-              placeholder="e.g. React, Next.js, Cloudflare, TypeScript"
+              placeholder="e.g. React, Next.js, TypeScript, Node.js"
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
               className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"

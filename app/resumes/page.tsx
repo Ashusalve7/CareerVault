@@ -7,12 +7,11 @@ import { ResumeCard } from '@/components/resumes/ResumeCard';
 import { ResumeUploader } from '@/components/resumes/ResumeUploader';
 import { ResumePreviewModal } from '@/components/resumes/ResumePreviewModal';
 import { ATSMatcherModal } from '@/components/resumes/ATSMatcherModal';
-import { CloudflareSettingsModal } from '@/components/settings/CloudflareSettingsModal';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { StorageEngine, SYNC_EVENT } from '@/lib/storage';
 import { AUTH_SYNC_EVENT } from '@/lib/auth';
 import { ResumeItem, JobApplication } from '@/lib/types';
-import { FileText, Plus, Sparkles, Cloud, HardDrive, ShieldCheck, Zap } from 'lucide-react';
+import { FileText, Plus, Sparkles, HardDrive, ShieldCheck, Zap } from 'lucide-react';
 
 export default function ResumesPage() {
   const [resumes, setResumes] = useState<ResumeItem[]>([]);
@@ -22,7 +21,6 @@ export default function ResumesPage() {
   const [previewResume, setPreviewResume] = useState<ResumeItem | null>(null);
   const [isATSMatcherOpen, setIsATSMatcherOpen] = useState(false);
   const [atsResume, setAtsResume] = useState<ResumeItem | null>(null);
-  const [isCloudflareModalOpen, setIsCloudflareModalOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'switch'>('switch');
 
@@ -77,7 +75,6 @@ export default function ResumesPage() {
   return (
     <div className="flex min-h-screen bg-[#090D16] text-slate-100 antialiased">
       <Sidebar
-        onOpenSettings={() => setIsCloudflareModalOpen(true)}
         onOpenAuth={handleOpenAuth}
       />
 
@@ -91,7 +88,6 @@ export default function ResumesPage() {
           onLocationTypeChange={() => {}}
           onOpenAddJob={() => {}}
           onOpenUploadResume={() => setIsUploaderOpen(true)}
-          onOpenCloudflareModal={() => setIsCloudflareModalOpen(true)}
           onOpenAuth={handleOpenAuth}
           totalJobsCount={jobs.length}
         />
@@ -102,8 +98,8 @@ export default function ResumesPage() {
             <div className="space-y-2 max-w-2xl">
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30 text-xs font-semibold flex items-center gap-1.5">
-                  <Cloud className="w-3.5 h-3.5" />
-                  Cloudflare R2 Object Storage
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  Secure Object Vault
                 </span>
                 <span className="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
@@ -114,7 +110,7 @@ export default function ResumesPage() {
                 Resume Vault & Version Management
               </h1>
               <p className="text-sm text-slate-300 leading-relaxed">
-                Store, version, and match customized resumes against job descriptions with zero-egress Cloudflare R2 storage.
+                Store, version, and match customized resumes against job descriptions with zero-loss cloud storage.
               </p>
             </div>
 
@@ -210,13 +206,6 @@ export default function ResumesPage() {
         jobs={jobs}
         isOpen={isATSMatcherOpen}
         onClose={() => setIsATSMatcherOpen(false)}
-      />
-
-      <CloudflareSettingsModal
-        isOpen={isCloudflareModalOpen}
-        onClose={() => setIsCloudflareModalOpen(false)}
-        jobsCount={jobs.length}
-        resumesCount={resumes.length}
       />
 
       <AuthModal

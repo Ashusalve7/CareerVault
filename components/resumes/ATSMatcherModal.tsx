@@ -56,10 +56,9 @@ export function ATSMatcherModal({
 
     // Common Tech Keywords Dictionary
     const techKeywords = [
-      'typescript', 'react', 'next.js', 'node.js', 'cloudflare', 'd1', 'r2', 'workers',
-      'python', 'postgresql', 'sql', 'graphql', 'rest api', 'docker', 'kubernetes',
-      'aws', 'system design', 'distributed systems', 'redis', 'kafka', 'go', 'rust',
-      'tailwind', 'microservices', 'caching', 'optimistic updates', 'websockets', 'rag', 'llm', 'ai'
+      'typescript', 'react', 'next.js', 'node.js', 'python', 'postgresql', 'sql', 'graphql',
+      'rest api', 'docker', 'kubernetes', 'aws', 'system design', 'distributed systems', 'redis',
+      'kafka', 'go', 'rust', 'tailwind', 'microservices', 'caching', 'optimistic updates', 'websockets', 'rag', 'llm', 'ai'
     ];
 
     const lowerJD = jdText.toLowerCase();

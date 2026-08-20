@@ -6,7 +6,6 @@ import {
   Plus,
   FileUp,
   SlidersHorizontal,
-  CloudLightning,
   Sparkles,
   Briefcase,
   User,
@@ -22,7 +21,6 @@ interface NavbarProps {
   onLocationTypeChange: (type: string) => void;
   onOpenAddJob: () => void;
   onOpenUploadResume?: () => void;
-  onOpenCloudflareModal: () => void;
   onOpenAuth?: (tab?: 'signin' | 'signup' | 'switch') => void;
   totalJobsCount?: number;
   activeInterviewsCount?: number;
@@ -37,7 +35,6 @@ export function Navbar({
   onLocationTypeChange,
   onOpenAddJob,
   onOpenUploadResume,
-  onOpenCloudflareModal,
   onOpenAuth,
   totalJobsCount = 0,
   activeInterviewsCount = 0,
@@ -116,17 +113,6 @@ export function Navbar({
 
       {/* Action Buttons */}
       <div className="flex items-center gap-3">
-        {/* Cloudflare Connection Tag */}
-        <button
-          onClick={onOpenCloudflareModal}
-          className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-xs text-slate-300 font-medium transition-colors"
-          title="Cloudflare D1 & R2 Setup"
-        >
-          <CloudLightning className="w-3.5 h-3.5 text-amber-400" />
-          <span>Cloudflare D1 + R2</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-        </button>
-
         {onOpenUploadResume && (
           <button
             onClick={onOpenUploadResume}

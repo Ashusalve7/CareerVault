@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Navbar } from '@/components/layout/Navbar';
-import { CloudflareSettingsModal } from '@/components/settings/CloudflareSettingsModal';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { StorageEngine, SYNC_EVENT } from '@/lib/storage';
 import { AUTH_SYNC_EVENT } from '@/lib/auth';
@@ -23,7 +22,6 @@ import {
 
 export default function AnalyticsPage() {
   const [jobs, setJobs] = useState<JobApplication[]>([]);
-  const [isCloudflareModalOpen, setIsCloudflareModalOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'switch'>('switch');
 
@@ -80,7 +78,6 @@ export default function AnalyticsPage() {
   return (
     <div className="flex min-h-screen bg-[#090D16] text-slate-100 antialiased">
       <Sidebar
-        onOpenSettings={() => setIsCloudflareModalOpen(true)}
         onOpenAuth={handleOpenAuth}
       />
 
@@ -93,7 +90,6 @@ export default function AnalyticsPage() {
           selectedLocationType="all"
           onLocationTypeChange={() => {}}
           onOpenAddJob={() => {}}
-          onOpenCloudflareModal={() => setIsCloudflareModalOpen(true)}
           onOpenAuth={handleOpenAuth}
           totalJobsCount={jobs.length}
         />
@@ -233,20 +229,13 @@ export default function AnalyticsPage() {
                 </div>
                 <div className="p-3.5 rounded-2xl bg-indigo-950/20 border border-indigo-500/30">
                   <strong className="text-indigo-300">Tailored Resume Impact:</strong> Applications linked
-                  with customized Cloudflare R2 resume versions receive 40% faster recruiter responses.
+                  with customized tailored resume versions receive 40% faster recruiter responses.
                 </div>
               </div>
             </div>
           </div>
         </main>
       </div>
-
-      <CloudflareSettingsModal
-        isOpen={isCloudflareModalOpen}
-        onClose={() => setIsCloudflareModalOpen(false)}
-        jobsCount={jobs.length}
-        resumesCount={0}
-      />
 
       <AuthModal
         isOpen={isAuthOpen}

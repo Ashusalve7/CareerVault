@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Navbar } from '@/components/layout/Navbar';
-import { CloudflareSettingsModal } from '@/components/settings/CloudflareSettingsModal';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { StorageEngine, SYNC_EVENT } from '@/lib/storage';
 import { AUTH_SYNC_EVENT } from '@/lib/auth';
@@ -26,7 +25,6 @@ import {
 export default function InterviewsPage() {
   const [jobs, setJobs] = useState<JobApplication[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isCloudflareModalOpen, setIsCloudflareModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'timeline' | 'question_bank'>('timeline');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'switch'>('switch');
@@ -67,7 +65,7 @@ export default function InterviewsPage() {
     return dateA - dateB;
   });
 
-  const handleUpdateRoundStatus = (jobId: string, roundId: string, status: InterviewRound['status']) => {
+  const handleUpdateRoundStatus = (jobId: string, roundId: string, status: any) => {
     const job = jobs.find((j) => j.id === jobId);
     if (!job) return;
     const updatedRounds = (job.interviewRounds || []).map((r) =>
@@ -92,9 +90,9 @@ export default function InterviewsPage() {
     },
     {
       category: 'Distributed Edge & Serverless DBs',
-      question: 'Explain how Cloudflare D1 implements distributed SQLite replication at the edge with WAL (Write-Ahead Logging) and read-replicas.',
-      tags: ['Cloudflare D1', 'SQLite', 'Raft', 'Edge Compute'],
-      company: 'Cloudflare',
+      question: 'Explain how globally distributed serverless SQL databases implement read-replicas, write-ahead logging (WAL), and edge consistency models.',
+      tags: ['Distributed SQL', 'SQLite', 'Raft Consensus', 'Edge Compute'],
+      company: 'Datadog / Stripe',
     },
     {
       category: 'Behavioral & Leadership (STAR Method)',
@@ -107,7 +105,6 @@ export default function InterviewsPage() {
   return (
     <div className="flex min-h-screen bg-[#090D16] text-slate-100 antialiased">
       <Sidebar
-        onOpenSettings={() => setIsCloudflareModalOpen(true)}
         onOpenAuth={handleOpenAuth}
       />
 
@@ -120,7 +117,6 @@ export default function InterviewsPage() {
           selectedLocationType="all"
           onLocationTypeChange={() => {}}
           onOpenAddJob={() => {}}
-          onOpenCloudflareModal={() => setIsCloudflareModalOpen(true)}
           onOpenAuth={handleOpenAuth}
           totalJobsCount={jobs.length}
         />
@@ -291,13 +287,6 @@ export default function InterviewsPage() {
           )}
         </main>
       </div>
-
-      <CloudflareSettingsModal
-        isOpen={isCloudflareModalOpen}
-        onClose={() => setIsCloudflareModalOpen(false)}
-        jobsCount={jobs.length}
-        resumesCount={0}
-      />
 
       <AuthModal
         isOpen={isAuthOpen}

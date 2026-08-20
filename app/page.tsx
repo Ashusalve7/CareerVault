@@ -8,7 +8,6 @@ import { JobDetailsModal } from '@/components/kanban/JobDetailsModal';
 import { AddJobModal } from '@/components/kanban/AddJobModal';
 import { ATSMatcherModal } from '@/components/resumes/ATSMatcherModal';
 import { ResumeUploader } from '@/components/resumes/ResumeUploader';
-import { CloudflareSettingsModal } from '@/components/settings/CloudflareSettingsModal';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { StorageEngine, SYNC_EVENT } from '@/lib/storage';
 import { AUTH_SYNC_EVENT } from '@/lib/auth';
@@ -28,7 +27,6 @@ export default function KanbanPage() {
   const [quickAddStatus, setQuickAddStatus] = useState<ApplicationStatus>('wishlist');
   const [isATSMatcherOpen, setIsATSMatcherOpen] = useState(false);
   const [isUploadResumeOpen, setIsUploadResumeOpen] = useState(false);
-  const [isCloudflareModalOpen, setIsCloudflareModalOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'switch'>('switch');
 
@@ -143,7 +141,6 @@ export default function KanbanPage() {
     <div className="flex min-h-screen bg-[#090D16] text-slate-100 antialiased">
       {/* Navigation Sidebar */}
       <Sidebar
-        onOpenSettings={() => setIsCloudflareModalOpen(true)}
         onOpenAuth={handleOpenAuth}
         onOpenAddJob={() => {
           setQuickAddStatus('wishlist');
@@ -166,7 +163,6 @@ export default function KanbanPage() {
             setIsAddJobOpen(true);
           }}
           onOpenUploadResume={() => setIsUploadResumeOpen(true)}
-          onOpenCloudflareModal={() => setIsCloudflareModalOpen(true)}
           totalJobsCount={jobs.length}
           activeInterviewsCount={activeInterviewsCount}
         />
@@ -224,13 +220,6 @@ export default function KanbanPage() {
           </div>
         </div>
       )}
-
-      <CloudflareSettingsModal
-        isOpen={isCloudflareModalOpen}
-        onClose={() => setIsCloudflareModalOpen(false)}
-        jobsCount={jobs.length}
-        resumesCount={resumes.length}
-      />
 
       <AuthModal
         isOpen={isAuthOpen}

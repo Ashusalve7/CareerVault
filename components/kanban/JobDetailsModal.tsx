@@ -329,7 +329,7 @@ export function JobDetailsModal({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-blue-400" />
-                    <h4 className="text-sm font-bold text-slate-100">Linked Resume Version (Cloudflare R2)</h4>
+                    <h4 className="text-sm font-bold text-slate-100">Linked Resume Version</h4>
                   </div>
                   {onOpenATSMatcher && (
                     <button
