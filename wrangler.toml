@@ -3,10 +3,6 @@ compatibility_date = "2026-08-01"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".next"
 
-[assets]
-directory = ".next"
-binding = "ASSETS"
-
 # -----------------------------------------------------------
 # Cloudflare D1 Serverless SQL Database Binding
 # -----------------------------------------------------------
