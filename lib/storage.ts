@@ -2,37 +2,46 @@
 
 import { JobApplication, ResumeItem, RecruiterContact, ApplicationStatus } from './types';
 import { INITIAL_JOBS, INITIAL_RESUMES, INITIAL_CONTACTS } from './sample-data';
+import { AuthEngine } from './auth';
 
-const JOBS_KEY = 'careervault_jobs_v1';
-const RESUMES_KEY = 'careervault_resumes_v1';
-const CONTACTS_KEY = 'careervault_contacts_v1';
-const SYNC_EVENT = 'careervault_storage_sync';
+export const SYNC_EVENT = 'careervault_storage_sync';
 
 export class StorageEngine {
   private static isClient(): boolean {
     return typeof window !== 'undefined';
   }
 
+  private static getJobsKey(): string {
+    return `careervault_jobs_${AuthEngine.getActiveUserId()}`;
+  }
+
+  private static getResumesKey(): string {
+    return `careervault_resumes_${AuthEngine.getActiveUserId()}`;
+  }
+
+  private static getContactsKey(): string {
+    return `careervault_contacts_${AuthEngine.getActiveUserId()}`;
+  }
+
   // --- JOBS ---
   public static getJobs(): JobApplication[] {
     if (!this.isClient()) return INITIAL_JOBS;
     try {
-      const stored = localStorage.getItem(JOBS_KEY);
+      const stored = localStorage.getItem(this.getJobsKey());
       if (!stored) {
-        this.saveJobs(INITIAL_JOBS);
-        return INITIAL_JOBS;
+        return [];
       }
       return JSON.parse(stored);
     } catch (e) {
       console.error('Error reading jobs from storage:', e);
-      return INITIAL_JOBS;
+      return [];
     }
   }
 
   public static saveJobs(jobs: JobApplication[]): void {
     if (!this.isClient()) return;
     try {
-      localStorage.setItem(JOBS_KEY, JSON.stringify(jobs));
+      localStorage.setItem(this.getJobsKey(), JSON.stringify(jobs));
       window.dispatchEvent(new CustomEvent(SYNC_EVENT, { detail: { type: 'jobs' } }));
     } catch (e) {
       console.error('Error saving jobs to storage:', e);
@@ -120,22 +129,21 @@ export class StorageEngine {
   public static getResumes(): ResumeItem[] {
     if (!this.isClient()) return INITIAL_RESUMES;
     try {
-      const stored = localStorage.getItem(RESUMES_KEY);
+      const stored = localStorage.getItem(this.getResumesKey());
       if (!stored) {
-        this.saveResumes(INITIAL_RESUMES);
-        return INITIAL_RESUMES;
+        return [];
       }
       return JSON.parse(stored);
     } catch (e) {
       console.error('Error reading resumes from storage:', e);
-      return INITIAL_RESUMES;
+      return [];
     }
   }
 
   public static saveResumes(resumes: ResumeItem[]): void {
     if (!this.isClient()) return;
     try {
-      localStorage.setItem(RESUMES_KEY, JSON.stringify(resumes));
+      localStorage.setItem(this.getResumesKey(), JSON.stringify(resumes));
       window.dispatchEvent(new CustomEvent(SYNC_EVENT, { detail: { type: 'resumes' } }));
     } catch (e) {
       console.error('Error saving resumes:', e);
@@ -167,22 +175,21 @@ export class StorageEngine {
   public static getContacts(): RecruiterContact[] {
     if (!this.isClient()) return INITIAL_CONTACTS;
     try {
-      const stored = localStorage.getItem(CONTACTS_KEY);
+      const stored = localStorage.getItem(this.getContactsKey());
       if (!stored) {
-        this.saveContacts(INITIAL_CONTACTS);
-        return INITIAL_CONTACTS;
+        return [];
       }
       return JSON.parse(stored);
     } catch (e) {
       console.error('Error reading contacts:', e);
-      return INITIAL_CONTACTS;
+      return [];
     }
   }
 
   public static saveContacts(contacts: RecruiterContact[]): void {
     if (!this.isClient()) return;
     try {
-      localStorage.setItem(CONTACTS_KEY, JSON.stringify(contacts));
+      localStorage.setItem(this.getContactsKey(), JSON.stringify(contacts));
       window.dispatchEvent(new CustomEvent(SYNC_EVENT, { detail: { type: 'contacts' } }));
     } catch (e) {
       console.error('Error saving contacts:', e);
@@ -218,12 +225,12 @@ export class StorageEngine {
     return true;
   }
 
-  // Reset to initial sample data
+  // Reset active user data
   public static resetToSampleData(): void {
     if (!this.isClient()) return;
-    localStorage.setItem(JOBS_KEY, JSON.stringify(INITIAL_JOBS));
-    localStorage.setItem(RESUMES_KEY, JSON.stringify(INITIAL_RESUMES));
-    localStorage.setItem(CONTACTS_KEY, JSON.stringify(INITIAL_CONTACTS));
+    localStorage.removeItem(this.getJobsKey());
+    localStorage.removeItem(this.getResumesKey());
+    localStorage.removeItem(this.getContactsKey());
     window.dispatchEvent(new CustomEvent(SYNC_EVENT, { detail: { type: 'all' } }));
   }
 }

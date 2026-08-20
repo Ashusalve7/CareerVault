@@ -1,9 +1,21 @@
 -- Cloudflare D1 Serverless SQL Database Schema for CareerVault
--- SQLite-compatible schema with performance indexes
+-- SQLite-compatible schema with performance indexes and multi-user data isolation
 
--- 1. Jobs Table
+-- 1. Users Table
+CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT,
+  role_title TEXT DEFAULT 'Software Engineer',
+  avatar_color TEXT DEFAULT '#3B82F6',
+  created_at TEXT NOT NULL
+);
+
+-- 2. Jobs Table (Scoped by user_id)
 CREATE TABLE IF NOT EXISTS jobs (
   id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL DEFAULT 'user-default',
   company TEXT NOT NULL,
   title TEXT NOT NULL,
   location TEXT DEFAULT '',
@@ -32,13 +44,15 @@ CREATE TABLE IF NOT EXISTS jobs (
   tags_json TEXT,      -- JSON array of tags
   color TEXT,
   created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 2. Interview Rounds Table
+-- 3. Interview Rounds Table
 CREATE TABLE IF NOT EXISTS interview_rounds (
   id TEXT PRIMARY KEY,
   job_id TEXT NOT NULL,
+  user_id TEXT NOT NULL DEFAULT 'user-default',
   round_number INTEGER NOT NULL,
   title TEXT NOT NULL,
   date_time TEXT,
@@ -53,12 +67,14 @@ CREATE TABLE IF NOT EXISTS interview_rounds (
   feedback TEXT,
   rating INTEGER CHECK(rating >= 1 AND rating <= 5),
   created_at TEXT NOT NULL,
-  FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE
+  FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 3. Resumes Table (Linked to Cloudflare R2)
+-- 4. Resumes Table (Linked to Cloudflare R2, scoped by user_id)
 CREATE TABLE IF NOT EXISTS resumes (
   id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL DEFAULT 'user-default',
   name TEXT NOT NULL,
   version_tag TEXT NOT NULL,
   file_name TEXT NOT NULL,
@@ -72,12 +88,14 @@ CREATE TABLE IF NOT EXISTS resumes (
   content_snippet TEXT,
   is_default INTEGER DEFAULT 0,
   upload_date TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 4. Recruiter Contacts CRM Table
+-- 5. Recruiter Contacts CRM Table (Scoped by user_id)
 CREATE TABLE IF NOT EXISTS contacts (
   id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL DEFAULT 'user-default',
   name TEXT NOT NULL,
   role TEXT NOT NULL,
   company TEXT NOT NULL,
@@ -87,14 +105,20 @@ CREATE TABLE IF NOT EXISTS contacts (
   notes TEXT,
   associated_jobs_json TEXT, -- JSON array of job IDs
   last_contacted_date TEXT,
-  created_at TEXT NOT NULL
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Indexes for blazing fast D1 query execution
+-- Indexes for blazing fast D1 multi-user query execution
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_jobs_user_id ON jobs(user_id);
 CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);
 CREATE INDEX IF NOT EXISTS idx_jobs_company ON jobs(company);
 CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs(created_at);
 CREATE INDEX IF NOT EXISTS idx_interview_rounds_job_id ON interview_rounds(job_id);
+CREATE INDEX IF NOT EXISTS idx_interview_rounds_user_id ON interview_rounds(user_id);
 CREATE INDEX IF NOT EXISTS idx_interview_rounds_status ON interview_rounds(status);
+CREATE INDEX IF NOT EXISTS idx_resumes_user_id ON resumes(user_id);
 CREATE INDEX IF NOT EXISTS idx_resumes_version ON resumes(version_tag);
+CREATE INDEX IF NOT EXISTS idx_contacts_user_id ON contacts(user_id);
 CREATE INDEX IF NOT EXISTS idx_contacts_company ON contacts(company);

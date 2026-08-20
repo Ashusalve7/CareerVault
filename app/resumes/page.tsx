@@ -8,7 +8,9 @@ import { ResumeUploader } from '@/components/resumes/ResumeUploader';
 import { ResumePreviewModal } from '@/components/resumes/ResumePreviewModal';
 import { ATSMatcherModal } from '@/components/resumes/ATSMatcherModal';
 import { CloudflareSettingsModal } from '@/components/settings/CloudflareSettingsModal';
-import { StorageEngine } from '@/lib/storage';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { StorageEngine, SYNC_EVENT } from '@/lib/storage';
+import { AUTH_SYNC_EVENT } from '@/lib/auth';
 import { ResumeItem, JobApplication } from '@/lib/types';
 import { FileText, Plus, Sparkles, Cloud, HardDrive, ShieldCheck, Zap } from 'lucide-react';
 
@@ -21,6 +23,8 @@ export default function ResumesPage() {
   const [isATSMatcherOpen, setIsATSMatcherOpen] = useState(false);
   const [atsResume, setAtsResume] = useState<ResumeItem | null>(null);
   const [isCloudflareModalOpen, setIsCloudflareModalOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'switch'>('switch');
 
   useEffect(() => {
     const loadData = () => {
@@ -30,9 +34,18 @@ export default function ResumesPage() {
 
     loadData();
     const handleSync = () => loadData();
-    window.addEventListener('careervault_storage_sync', handleSync);
-    return () => window.removeEventListener('careervault_storage_sync', handleSync);
+    window.addEventListener(SYNC_EVENT, handleSync);
+    window.addEventListener(AUTH_SYNC_EVENT, handleSync);
+    return () => {
+      window.removeEventListener(SYNC_EVENT, handleSync);
+      window.removeEventListener(AUTH_SYNC_EVENT, handleSync);
+    };
   }, []);
+
+  const handleOpenAuth = (tab: 'signin' | 'signup' | 'switch' = 'switch') => {
+    setAuthTab(tab);
+    setIsAuthOpen(true);
+  };
 
   const handleUploadSuccess = (resumeData: Omit<ResumeItem, 'id' | 'uploadDate' | 'updatedAt'>) => {
     StorageEngine.addResume(resumeData);
@@ -63,7 +76,10 @@ export default function ResumesPage() {
 
   return (
     <div className="flex min-h-screen bg-[#090D16] text-slate-100 antialiased">
-      <Sidebar onOpenSettings={() => setIsCloudflareModalOpen(true)} />
+      <Sidebar
+        onOpenSettings={() => setIsCloudflareModalOpen(true)}
+        onOpenAuth={handleOpenAuth}
+      />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         <Navbar
@@ -76,6 +92,7 @@ export default function ResumesPage() {
           onOpenAddJob={() => {}}
           onOpenUploadResume={() => setIsUploaderOpen(true)}
           onOpenCloudflareModal={() => setIsCloudflareModalOpen(true)}
+          onOpenAuth={handleOpenAuth}
           totalJobsCount={jobs.length}
         />
 
@@ -200,6 +217,12 @@ export default function ResumesPage() {
         onClose={() => setIsCloudflareModalOpen(false)}
         jobsCount={jobs.length}
         resumesCount={resumes.length}
+      />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        initialTab={authTab}
       />
     </div>
   );

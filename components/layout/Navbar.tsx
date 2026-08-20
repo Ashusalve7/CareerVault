@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search,
   Plus,
@@ -8,8 +8,10 @@ import {
   SlidersHorizontal,
   CloudLightning,
   Sparkles,
-  Briefcase
+  Briefcase,
+  User,
 } from 'lucide-react';
+import { AuthEngine, UserAccount, AUTH_SYNC_EVENT } from '@/lib/auth';
 
 interface NavbarProps {
   searchTerm: string;
@@ -21,6 +23,7 @@ interface NavbarProps {
   onOpenAddJob: () => void;
   onOpenUploadResume?: () => void;
   onOpenCloudflareModal: () => void;
+  onOpenAuth?: (tab?: 'signin' | 'signup' | 'switch') => void;
   totalJobsCount?: number;
   activeInterviewsCount?: number;
 }
@@ -35,9 +38,22 @@ export function Navbar({
   onOpenAddJob,
   onOpenUploadResume,
   onOpenCloudflareModal,
+  onOpenAuth,
   totalJobsCount = 0,
   activeInterviewsCount = 0,
 }: NavbarProps) {
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
+
+  useEffect(() => {
+    setCurrentUser(AuthEngine.getCurrentUser());
+
+    const handleAuthSync = () => {
+      setCurrentUser(AuthEngine.getCurrentUser());
+    };
+
+    window.addEventListener(AUTH_SYNC_EVENT, handleAuthSync);
+    return () => window.removeEventListener(AUTH_SYNC_EVENT, handleAuthSync);
+  }, []);
   return (
     <header className="h-18 border-b border-slate-800/80 bg-[#0B1120]/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 gap-4">
       {/* Search and Filters */}
@@ -127,6 +143,28 @@ export function Navbar({
         >
           <Plus className="w-4 h-4" />
           <span>Add Application</span>
+        </button>
+
+        {/* User Account Badge Button */}
+        <button
+          onClick={() => onOpenAuth && onOpenAuth('switch')}
+          className="flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 transition-all group"
+          title="Manage user profiles / Switch account"
+        >
+          <div
+            style={{ backgroundColor: currentUser?.avatarColor || '#3B82F6' }}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white shadow-sm"
+          >
+            {currentUser?.name?.charAt(0).toUpperCase() || 'U'}
+          </div>
+          <div className="hidden sm:block text-left">
+            <div className="text-xs font-bold text-slate-200 group-hover:text-blue-400 leading-tight">
+              {currentUser?.name || 'Account'}
+            </div>
+            <div className="text-[10px] text-slate-500 leading-tight">
+              Switch
+            </div>
+          </div>
         </button>
       </div>
     </header>

@@ -9,7 +9,9 @@ import { AddJobModal } from '@/components/kanban/AddJobModal';
 import { ATSMatcherModal } from '@/components/resumes/ATSMatcherModal';
 import { ResumeUploader } from '@/components/resumes/ResumeUploader';
 import { CloudflareSettingsModal } from '@/components/settings/CloudflareSettingsModal';
-import { StorageEngine } from '@/lib/storage';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { StorageEngine, SYNC_EVENT } from '@/lib/storage';
+import { AUTH_SYNC_EVENT } from '@/lib/auth';
 import { JobApplication, ApplicationStatus, ResumeItem } from '@/lib/types';
 
 export default function KanbanPage() {
@@ -27,8 +29,10 @@ export default function KanbanPage() {
   const [isATSMatcherOpen, setIsATSMatcherOpen] = useState(false);
   const [isUploadResumeOpen, setIsUploadResumeOpen] = useState(false);
   const [isCloudflareModalOpen, setIsCloudflareModalOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'switch'>('switch');
 
-  // Load data on mount & subscribe to storage events
+  // Load data on mount & subscribe to storage & auth events
   useEffect(() => {
     const loadData = () => {
       setJobs(StorageEngine.getJobs());
@@ -38,9 +42,18 @@ export default function KanbanPage() {
     loadData();
 
     const handleSync = () => loadData();
-    window.addEventListener('careervault_storage_sync', handleSync);
-    return () => window.removeEventListener('careervault_storage_sync', handleSync);
+    window.addEventListener(SYNC_EVENT, handleSync);
+    window.addEventListener(AUTH_SYNC_EVENT, handleSync);
+    return () => {
+      window.removeEventListener(SYNC_EVENT, handleSync);
+      window.removeEventListener(AUTH_SYNC_EVENT, handleSync);
+    };
   }, []);
+
+  const handleOpenAuth = (tab: 'signin' | 'signup' | 'switch' = 'switch') => {
+    setAuthTab(tab);
+    setIsAuthOpen(true);
+  };
 
   // Update handlers
   const handleUpdateJobs = (newJobs: JobApplication[]) => {
@@ -131,6 +144,7 @@ export default function KanbanPage() {
       {/* Navigation Sidebar */}
       <Sidebar
         onOpenSettings={() => setIsCloudflareModalOpen(true)}
+        onOpenAuth={handleOpenAuth}
         onOpenAddJob={() => {
           setQuickAddStatus('wishlist');
           setIsAddJobOpen(true);
@@ -146,6 +160,7 @@ export default function KanbanPage() {
           onPriorityChange={setSelectedPriority}
           selectedLocationType={selectedLocationType}
           onLocationTypeChange={setSelectedLocationType}
+          onOpenAuth={handleOpenAuth}
           onOpenAddJob={() => {
             setQuickAddStatus('wishlist');
             setIsAddJobOpen(true);
@@ -215,6 +230,12 @@ export default function KanbanPage() {
         onClose={() => setIsCloudflareModalOpen(false)}
         jobsCount={jobs.length}
         resumesCount={resumes.length}
+      />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        initialTab={authTab}
       />
     </div>
   );

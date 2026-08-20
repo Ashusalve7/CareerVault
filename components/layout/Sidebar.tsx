@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -14,16 +14,33 @@ import {
   Sparkles,
   RotateCcw,
   Cloud,
+  UserCheck,
+  ChevronDown,
+  UserPlus,
 } from 'lucide-react';
 import { StorageEngine } from '@/lib/storage';
+import { AuthEngine, UserAccount, AUTH_SYNC_EVENT } from '@/lib/auth';
 
 interface SidebarProps {
   onOpenSettings?: () => void;
   onOpenAddJob?: () => void;
+  onOpenAuth?: (tab?: 'signin' | 'signup' | 'switch') => void;
 }
 
-export function Sidebar({ onOpenSettings }: SidebarProps) {
+export function Sidebar({ onOpenSettings, onOpenAuth }: SidebarProps) {
   const pathname = usePathname();
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
+
+  useEffect(() => {
+    setCurrentUser(AuthEngine.getCurrentUser());
+
+    const handleAuthSync = () => {
+      setCurrentUser(AuthEngine.getCurrentUser());
+    };
+
+    window.addEventListener(AUTH_SYNC_EVENT, handleAuthSync);
+    return () => window.removeEventListener(AUTH_SYNC_EVENT, handleAuthSync);
+  }, []);
 
   const navItems = [
     {
@@ -163,19 +180,47 @@ export function Sidebar({ onOpenSettings }: SidebarProps) {
         </button>
       </nav>
 
-      {/* Footer Utility Actions */}
-      <div className="p-3 border-t border-slate-800/80 space-y-2">
+      {/* Active User Profile Widget */}
+      <div className="p-3 border-t border-slate-800/80 bg-[#0B1120] space-y-2">
         <button
-          onClick={handleResetData}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 border border-slate-800/50 transition-colors"
-          title="Clear all stored data"
+          onClick={() => onOpenAuth && onOpenAuth('switch')}
+          className="w-full p-2.5 rounded-xl bg-slate-900/90 border border-slate-800/80 hover:border-slate-700 flex items-center justify-between text-left transition-all group"
+          title="Click to switch or create accounts"
         >
-          <RotateCcw className="w-3.5 h-3.5" />
-          Clear All Data
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div
+              style={{ backgroundColor: currentUser?.avatarColor || '#3B82F6' }}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white shadow-sm shrink-0"
+            >
+              {currentUser?.name?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-bold text-slate-200 truncate group-hover:text-blue-400 transition-colors">
+                {currentUser?.name || 'Personal Account'}
+              </div>
+              <div className="text-[10px] text-slate-500 truncate">
+                {currentUser?.email || 'user@careervault.dev'}
+              </div>
+            </div>
+          </div>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-300 shrink-0" />
         </button>
-        <div className="text-[11px] text-center text-slate-400 flex items-center justify-center gap-1">
-          <Sparkles className="w-3 h-3 text-indigo-400" />
-          CareerVault Next.js & D1/R2
+
+        <div className="flex items-center gap-1.5 pt-1">
+          <button
+            onClick={() => onOpenAuth && onOpenAuth('signup')}
+            className="flex-1 py-1.5 px-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-lg text-[11px] font-medium border border-slate-800 flex items-center justify-center gap-1 transition-colors"
+          >
+            <UserPlus className="w-3 h-3 text-blue-400" />
+            New Account
+          </button>
+          <button
+            onClick={handleResetData}
+            className="py-1.5 px-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-rose-400 rounded-lg text-[11px] font-medium border border-slate-800 flex items-center justify-center transition-colors"
+            title="Clear active account data"
+          >
+            <RotateCcw className="w-3 h-3" />
+          </button>
         </div>
       </div>
     </aside>

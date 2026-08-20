@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Navbar } from '@/components/layout/Navbar';
 import { CloudflareSettingsModal } from '@/components/settings/CloudflareSettingsModal';
-import { StorageEngine } from '@/lib/storage';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { StorageEngine, SYNC_EVENT } from '@/lib/storage';
+import { AUTH_SYNC_EVENT } from '@/lib/auth';
 import { JobApplication } from '@/lib/types';
 import {
   BarChart3,
@@ -22,14 +24,25 @@ import {
 export default function AnalyticsPage() {
   const [jobs, setJobs] = useState<JobApplication[]>([]);
   const [isCloudflareModalOpen, setIsCloudflareModalOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'switch'>('switch');
 
   useEffect(() => {
     const loadData = () => setJobs(StorageEngine.getJobs());
     loadData();
     const handleSync = () => loadData();
-    window.addEventListener('careervault_storage_sync', handleSync);
-    return () => window.removeEventListener('careervault_storage_sync', handleSync);
+    window.addEventListener(SYNC_EVENT, handleSync);
+    window.addEventListener(AUTH_SYNC_EVENT, handleSync);
+    return () => {
+      window.removeEventListener(SYNC_EVENT, handleSync);
+      window.removeEventListener(AUTH_SYNC_EVENT, handleSync);
+    };
   }, []);
+
+  const handleOpenAuth = (tab: 'signin' | 'signup' | 'switch' = 'switch') => {
+    setAuthTab(tab);
+    setIsAuthOpen(true);
+  };
 
   // Compute metrics
   const total = jobs.length;
@@ -66,7 +79,10 @@ export default function AnalyticsPage() {
 
   return (
     <div className="flex min-h-screen bg-[#090D16] text-slate-100 antialiased">
-      <Sidebar onOpenSettings={() => setIsCloudflareModalOpen(true)} />
+      <Sidebar
+        onOpenSettings={() => setIsCloudflareModalOpen(true)}
+        onOpenAuth={handleOpenAuth}
+      />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         <Navbar
@@ -78,6 +94,7 @@ export default function AnalyticsPage() {
           onLocationTypeChange={() => {}}
           onOpenAddJob={() => {}}
           onOpenCloudflareModal={() => setIsCloudflareModalOpen(true)}
+          onOpenAuth={handleOpenAuth}
           totalJobsCount={jobs.length}
         />
 
@@ -229,6 +246,12 @@ export default function AnalyticsPage() {
         onClose={() => setIsCloudflareModalOpen(false)}
         jobsCount={jobs.length}
         resumesCount={0}
+      />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        initialTab={authTab}
       />
     </div>
   );
